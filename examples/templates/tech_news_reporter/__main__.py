@@ -10,7 +10,7 @@ import logging
 import sys
 import click
 
-from .agent import default_agent, TechNewsReporterAgent
+from .agent import default_agent, TechNewsReporterAgent, get_storage_path
 
 
 def setup_logging(verbose=False, debug=False):
@@ -72,8 +72,6 @@ def tui(verbose, debug):
         )
         sys.exit(1)
 
-    from pathlib import Path
-
     from framework.llm import LiteLLMProvider
     from framework.runner.tool_registry import ToolRegistry
     from framework.runtime.agent_runtime import create_agent_runtime
@@ -86,8 +84,7 @@ def tui(verbose, debug):
         agent._event_bus = EventBus()
         agent._tool_registry = ToolRegistry()
 
-        storage_path = Path.home() / ".hive" / "agents" / "tech_news_reporter"
-        storage_path.mkdir(parents=True, exist_ok=True)
+        storage_path = get_storage_path()
 
         mcp_config_path = Path(__file__).parent / "mcp_servers.json"
         if mcp_config_path.exists():

@@ -1,5 +1,7 @@
 """Agent graph construction for Tech & AI News Reporter."""
 
+from pathlib import Path
+
 from framework.graph import EdgeSpec, EdgeCondition, Goal, SuccessCriterion, Constraint
 from framework.graph.edge import GraphSpec
 from framework.graph.executor import ExecutionResult, GraphExecutor
@@ -115,6 +117,14 @@ pause_nodes = []
 terminal_nodes = ["compile-report"]
 
 
+def get_storage_path() -> Path:
+    """Return a project-local storage path for agent runtime data."""
+    project_root = Path(__file__).resolve().parents[3]
+    storage_path = project_root / "JinLog" / "tech_news_reporter"
+    storage_path.mkdir(parents=True, exist_ok=True)
+    return storage_path
+
+
 class TechNewsReporterAgent:
     """
     Tech & AI News Reporter — 3-node pipeline.
@@ -159,10 +169,7 @@ class TechNewsReporterAgent:
 
     def _setup(self) -> GraphExecutor:
         """Set up the executor with all components."""
-        from pathlib import Path
-
-        storage_path = Path.home() / ".hive" / "tech_news_reporter"
-        storage_path.mkdir(parents=True, exist_ok=True)
+        storage_path = get_storage_path()
 
         self._event_bus = EventBus()
         self._tool_registry = ToolRegistry()
